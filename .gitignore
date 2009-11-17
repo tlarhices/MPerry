@@ -1,3 +1,6 @@
 bam/*
 xml/*
 *.db
+RTheme.atlas.egg
+RTheme.atlas.png
+*.pyc

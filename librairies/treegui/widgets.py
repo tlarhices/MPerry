@@ -257,9 +257,15 @@ class TextArea(Label):
     
 class Entry(TextArea):
     multiLine = False
+    defaultText = None
     
     def onEnter(self):
         """ overide to catch the on enter key strokes """
+        
+    def onFocus(self):
+        if self.text == self.defaultText:
+          self.text=""
+        TextArea.onFocus(self)
     
 class PasswordEntry(Entry):
     """ single line entry that types as stars "*" """

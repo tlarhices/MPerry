@@ -23,18 +23,18 @@ class Gauche(ScrollPane):
   def __init__(self, gui):
     self.gui=gui
     ScrollPane.__init__(self)
-    self.add(Label("Couches :", y = 0))
+    self.add(Label("Couches :", x=3, y = 0))
     self.boutons = []
     i=1
     liste=self.gui.cg.elements.keys()
     liste.remove("tout")
     liste.sort()
     for elem in liste:
-      check = self.add(Check(elem.capitalize(), y = 17*i))
+      check = self.add(Check(elem.capitalize(), x=3, y = 17*i))
       check.callback = self.clic
       self.boutons.append(check)
       i+=1
-    self.inverse = self.add(Button("Inverser", self.inverse, y=17 * i + 5, width="55px"))
+    self.inverse = self.add(Button("Inverser", self.inverse, x=7, y=17 * i + 5, width="55px"))
     
     self.x = "left" 
     self.y = "center" 
@@ -78,7 +78,7 @@ class Bas(Form):
   def __init__(self):
     Form.__init__(self)
     
-    self.label = self.add(Label("...", y = 0))
+    self.label = self.add(Label("...", y="center"))
     #label.font = font
     
     self.x = "center" 
@@ -97,6 +97,7 @@ class Haut(Form):
     
     self.coord = self.add(Label("Position : 0.0, 0.0", x="center", y ="top", width="100%"))
     self.recherche = self.add(Entry("Rechercher...", x="left", y="bottom", width="90%"))
+    self.recherche.defaultText = "Rechercher..."
     self.recherche.onEnter = self.clic
     self.bouton = self.add(Icon("rtheme/twotone/search.png", x="right", y="bottom"))
     self.bouton.onClick = self.clic
@@ -143,7 +144,7 @@ class Interface:
     p = base.camera.getPos()
     base.camera.setPos(p[0], p[1]*1.333, p[2])
     
-  deltaCamX = 0.001
+  deltaCamX = 0.01
   deltaCamY = 0.001
     
   def deplaceHaut(self):
@@ -159,12 +160,12 @@ class Interface:
   def deplaceGauche(self):
     self.droite.snapLibre.onClick()
     p = base.camera.getPos()
-    base.camera.setPos(p[0]-self.deltaCamX, p[1], p[2])
+    base.camera.setPos(p[0]+self.deltaCamX, p[1], p[2])
 
   def deplaceDroite(self):
     self.droite.snapLibre.onClick()
     p = base.camera.getPos()
-    base.camera.setPos(p[0]+self.deltaCamX, p[1], p[2])
+    base.camera.setPos(p[0]-self.deltaCamX, p[1], p[2])
     
   def select(self, type, affiche=True):
     type=type.lower()

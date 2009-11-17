@@ -46,8 +46,9 @@ from pandac.PandaModules import *
 loadPrcFileData("",u"win-size 160 120")
 #Kicke la synchro avec VSynch pour pouvoir dépasser les 60 FPS
 loadPrcFileData("",u"sync-video #f")
-if sys.argv[1]=="parse" or sys.argv[1]=="parse+bam":
-  loadPrcFileData("",u"window-type none")
+if len(sys.argv)>1:
+  if sys.argv[1]=="parse" or sys.argv[1]=="parse+bam":
+    loadPrcFileData("",u"window-type none")
 import direct.directbase.DirectStart
 from direct.task import Task
 base.disableMouse()

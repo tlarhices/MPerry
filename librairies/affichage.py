@@ -79,7 +79,7 @@ class Affichage:
 
   def affichePoint(self, point, racine, couleur):
     pt = NodePath("point")
-    dessineLigne(couleur, self.getCoord(point), self.getCoord(point), pt)
+    self.dessineLigne(couleur, self.getCoord(point), self.getCoord(point), pt)
     pt.reparentTo(racine)
 
   def affichePolyligne(self, polyligne, racine, couleur, boucle=False):
@@ -187,7 +187,6 @@ class Affichage:
       return
       
     for fichier, racine in self.enMemoire[categorie]:
-      print "suppression de ", racine.getPythonTag("inst")
       racine.detachNode()
       racine.removeNode()
     self.enMemoire[categorie] = []

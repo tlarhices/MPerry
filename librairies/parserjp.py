@@ -38,6 +38,8 @@ class ParserJP:
     name=name.lower().strip()
     OK=False
     
+    idObj = None
+    
     if name == "gi": #Racine de la structure
       OK = True
       self.pile[str(self.chemin)] = None
@@ -412,7 +414,7 @@ class ParserJP:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
         
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=self.pile[str(self.chemin)][7][1][0]).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=self.pile[str(self.chemin)][7][1][0]).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "admbdry": #Frontières administratives (Administrative Boundary)
@@ -429,7 +431,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "admpt": #(Representative point of Administrative Area)
@@ -448,7 +450,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=self.pile[str(self.chemin)][4][1], zone=None, typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=self.pile[str(self.chemin)][7][1][0]).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=self.pile[str(self.chemin)][4][1], zone=None, typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=self.pile[str(self.chemin)][7][1][0]).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "blda": #(Boulding Area)
@@ -466,7 +468,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "bldl": #(Boulding Outine)
@@ -484,7 +486,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "cntr": # Courbes de niveau (Countour) ???
@@ -512,7 +514,7 @@ class ParserJP:
             if pt.y != self.pile[str(self.chemin)][6][1][0]:
               pt.y = self.pile[str(self.chemin)][6][1][0]
               pt.majBDD()
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = self.pile[str(self.chemin)][2:6]
         self.pile[str(self.chemin)] = None
         
@@ -530,7 +532,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "commpt": #(Representative Point of Community Area)
@@ -549,7 +551,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=self.pile[str(self.chemin)][4][1], zone=None, typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=self.pile[str(self.chemin)][7][1][0]).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=self.pile[str(self.chemin)][4][1], zone=None, typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=self.pile[str(self.chemin)][7][1][0]).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "cstline": #Une côte (Coastline)
@@ -567,7 +569,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "elevpt": #Un point en 3D (Elevation Point)
@@ -589,7 +591,7 @@ class ParserJP:
           pt.y = self.pile[str(self.chemin)][6][1][0]
           pt.majBDD()
         
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=self.pile[str(self.chemin)][4][1], zone=None, typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=self.pile[str(self.chemin)][4][1], zone=None, typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = self.pile[str(self.chemin)][2:6]
         self.pile[str(self.chemin)] = None
         
@@ -608,7 +610,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "rdcompt": #Route (Road Component)
@@ -625,7 +627,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=None, codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "rdedg": #Route (Road Edge)
@@ -643,7 +645,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "wa": #(Water Area)
@@ -661,7 +663,7 @@ class ParserJP:
       else:
         self.pile[str(self.chemin)][0] = self.pile[str(self.chemin)][0].split(":")[1]
         self.pile[str(self.chemin)][1] = self.pile[str(self.chemin)][1].split(":")[1]
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     elif name == "wl": #(Water Line)
@@ -677,13 +679,18 @@ class ParserJP:
           print "-",element
           raw_input()
       else:
-        id = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
+        idObj = Objet(dateDeb=self.pile[str(self.chemin)][2][1], dateFin=self.pile[str(self.chemin)][3][1], position=None, zone=self.pile[str(self.chemin)][4][1], typeG=name, type=self.pile[str(self.chemin)][5][1], nom=self.pile[str(self.chemin)][6][1], codeAdministratif=None).versBDD()
         self.pile[str(self.chemin)] = None
         
     else:
       print
       print '  elif name == "'+name+'":'
       print '    pass'
+      
+    if idObj!=None:
+      obj = self.cg.getObjet(idObj)
+      if obj.typeG in self.cg.typeAffichage:
+        self.cg.afficheObjet(render, obj, idObj)
     
     if not OK:
       print
@@ -743,7 +750,7 @@ class ParserJP:
         else:
           tt = fichier.split(".")[0]
     #    if tt in ['AdmArea', 'AdmBdry', 'AdmPt', 'BldA', 'BldL', 'CommBdry', 'CommPt', 'Cstline', 'ElevPt', 'RailCL', 'RdCompt', 'RdEdg', 'WA', 'WL']:
-        if tt in ['AdmBdry', 'AdmPt', 'CommBdry', 'CommPt', 'Cstline', 'RailCL', 'RdCompt', 'WL']: #'RdEdg', 
+        if tt in ['AdmBdry', 'AdmPt', 'CommBdry', 'CommPt', 'Cstline', 'RailCL', 'RdCompt', 'WL', 'WA']: #'RdEdg', 
     #    if tt in ['AdmArea25000', 'AdmArea', 'AdmBdry', 'AdmBdry25000', 'AdmPt25000', 'AdmPt', 'BldA', 'BldA25000', 'BldA', 'BldA25000', 'BldL', 'Cntr25000', 'CommBdry', 'CommPt', 'Cstline25000', 'Cstline', 'ElevPt', 'ElevPt25000', 'RailCL', 'RailCL25000', 'RdCompt', 'RdEdg25000', 'RdEdg', 'WA', 'WL', 'WL25000']:
           self.fichiers.append(fichier)
 
