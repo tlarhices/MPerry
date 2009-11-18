@@ -14,7 +14,8 @@ from parserjp import ParserJP
 from gui import Interface
 
 def ping(task):
-  parseur.parseTick()
+  if gui.parsageActif():
+    parseur.parseTick()
   
   GPSCoord, GPSAltitude = gps.ping()
   affCoord = ""

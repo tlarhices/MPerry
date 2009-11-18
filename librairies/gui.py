@@ -78,8 +78,10 @@ class Bas(Form):
   def __init__(self):
     Form.__init__(self)
     
-    self.label = self.add(Label("...", y="center"))
+    self.label = self.add(Label("...", y="top"))
     #label.font = font
+    self.parsage = self.add(Check("Parser ?", y="bottom"))
+    self.parsage.onClick()
     
     self.x = "center" 
     self.y = "bottom" 
@@ -197,3 +199,8 @@ class Interface:
     if self.droite.snapContenu.value:
       return "contenu"
     return "snap err"
+    
+  def parsageActif(self):
+    if self.bas.parsage.value:
+      return True
+    return False
