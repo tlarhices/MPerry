@@ -14,6 +14,7 @@ from parserjp import ParserJP
 from gui import Interface
 
 def ping(task):
+  aff.ping()
   if gui.parsageActif():
     parseur.parseTick()
   

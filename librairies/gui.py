@@ -67,10 +67,13 @@ class Droite(Form):
     self.snapLibre = self.add(PictureRadio("rtheme/twotone/move-over.png", "rtheme/twotone/move.png", y = zero + 17, x=34))
     self.snapGPS.onClick()
     
+    self.parsage = self.add(Check("Parser ?", y=zero + 34))
+    self.parsage.onClick()
+
     self.x = "right" 
     self.y = "20%" 
     self.width = "54px"
-    self.height = "95px"
+    self.height = "105px"
 
 class Bas(Form):
   style = "default"
@@ -78,10 +81,10 @@ class Bas(Form):
   def __init__(self):
     Form.__init__(self)
     
-    self.label = self.add(Label("...", y="top"))
+    self.haut = self.add(Label("", y="top"))
+    self.bas = self.add(Label("", y="bottom"))
+    self.centre = self.add(Label("", y="center"))
     #label.font = font
-    self.parsage = self.add(Check("Parser ?", y="bottom"))
-    self.parsage.onClick()
     
     self.x = "center" 
     self.y = "bottom" 
@@ -137,6 +140,8 @@ class Interface:
     self.gui.add(self.gauche)
     self.quit = self.gui.add(Icon("rtheme/twotone/x.png", x="right", y="top"))
     self.quit.onClick = sys.exit
+    self.chargement = self.gui.add(Icon("rtheme/twotone/gear.png", x="left", y="top"))
+    #self.chargement.onHover = self.afficheDetailChargement
     
   def zoomPlus(self):
     p = base.camera.getPos()
@@ -181,10 +186,16 @@ class Interface:
       
   def afficheTexte(self, texte, orientation="centre", section=None, forceRefresh=False):
     """Affiche le texte sur l'écran, si texte==None, alors efface le dernier texte affiché"""
-    print texte
+    print texte, orientation
     try:
       if texte!=None:
-        self.bas.label.text=texte
+        if orientation=="bas":
+          self.bas.bas.text=texte
+        elif orientation=="haut":
+          self.bas.haut.text=texte
+        else:
+          self.bas.centre.text=texte
+
     except NameError:
       return
     
@@ -201,6 +212,11 @@ class Interface:
     return "snap err"
     
   def parsageActif(self):
-    if self.bas.parsage.value:
+    if self.droite.parsage.value:
       return True
     return False
+    
+  def setObjetEnAttente(self, vrai):
+    self.chargement.visable = vrai
+    if vrai:
+      self.afficheTexte(texte="Objets restants a afficher : "+str(len(self.cg.objetsAAfficher) + len(self.cg.objetsACharger) + len(self.cg.objetsAFabriquer)), orientation = "haut")

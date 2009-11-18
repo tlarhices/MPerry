@@ -21,6 +21,10 @@ class Affichage:
   
   racine=None
   
+  objetsAAfficher = None
+  objetsAFabriquer = None
+  objetsACharger = None
+  
   def __init__(self):
     self.racine = NodePath("")
     self.racine.reparentTo(render)
@@ -30,6 +34,10 @@ class Affichage:
     self.enMemoire={}
     self.typeAffichage = []
     self.tuiles = []
+    
+    self.objetsAAfficher = []
+    self.objetsAFabriquer = []
+    self.objetsACharger = []
     
   def debutLigne(self, couleur, depart):
     ls = LineSegs()
@@ -128,52 +136,92 @@ class Affichage:
       if self.NoLoad:
         return
       else:
-        rac=loader.loadModel(fichier)#, callback=chargeModel, extraArgs=[racine])
+        self.objetsACharger.append((racine, objet, id))
+        #rac=loader.loadModel(fichier)#, callback=chargeModel, extraArgs=[racine])
     else:
-      if objet.typeG=="admarea":
-        couleur = (1.0, 1.0, 1.0, 1.0)
-      elif objet.typeG=="admpt":
-        couleur = (1.0, 1.0, 1.0, 1.0)
-      elif objet.typeG=="admbdry":
-        couleur = (1.0, 1.0, 1.0, 1.0)
-      elif objet.typeG=="blda":
-        couleur = (0.9, 0.0, 0.9, 1.0)
-      elif objet.typeG=="bldl":
-        couleur = (0.9, 0.0, 0.9, 1.0)
-      elif objet.typeG=="cntr":
-        couleur = (0.1, 0.8, 1.0, 1.0)
-      elif objet.typeG=="commbdry":
-        couleur = (1.0, 1.0, 1.0, 1.0)
-      elif objet.typeG=="commpt":
-        couleur = (1.0, 1.0, 1.0, 1.0)
-      elif objet.typeG=="cstline":
-        couleur = (0.0, 0.0, 0.8, 1.0)
-      elif objet.typeG=="railcl":
-        couleur = (0.0, 0.0, 0.0, 1.0)
-      elif objet.typeG=="rdcompt":
-        couleur = (1.0, 0.0, 0.0, 1.0)
-      elif objet.typeG=="rdedg":
-        couleur = (1.0, 0.0, 0.0, 1.0)
-      elif objet.typeG=="wa":
-        couleur = (0.0, 0.0, 1.0, 1.0)
-      elif objet.typeG=="wl":
-        couleur = (0.0, 0.0, 1.0, 1.0)
-      elif objet.typeG=="elevpt":
-        return
-        couleur = (1.0, 0.8, 1.0, 1.0)
-      else:
-        couleur = (0.0, 1.0, 0.0, 1.0)
-        print "Type inconnu :",objet.typeG
+      self.objetsAFabriquer.append((racine, objet, id))
+      
+  def ping(self):
+    
+    deb = time.time()
+    
+    while time.time()-deb<0.1:
+      self.gui.setObjetEnAttente(False)
+      if len(self.objetsAAfficher)>0:
+        self.gui.setObjetEnAttente(True)
+        racine, id, typeG = self.objetsAAfficher[0]
+        self.objetsAAfficher = self.objetsAAfficher[1:]
+        if typeG in self.typeAffichage:
+          obj = self.getObjet(id)
+          self.afficheObjet(racine, obj, id)
+      if len(self.objetsACharger)>0:
+        self.gui.setObjetEnAttente(True)
+        racine, objet, id = self.objetsACharger[0]
+        self.objetsACharger = self.objetsACharger[1:]
+        if objet.typeG in self.typeAffichage:
+          self.chargeObjet(racine, objet, id)
+      if len(self.objetsAFabriquer)>0:
+        self.gui.setObjetEnAttente(True)
+        racine, objet, id = self.objetsAFabriquer[0]
+        self.objetsAFabriquer = self.objetsAFabriquer[1:]
+        if objet.typeG in self.typeAffichage:
+          self.fabriqueObjet(racine, objet, id)
+      
+  def chargeObjet(self, racine, objet, id):
+    fichier = os.path.join(".", "bam", str(hashlib.sha512(str(objet)).hexdigest())+".bam")
+    rac=loader.loadModel(fichier)
+    rac.reparentTo(racine)
+    rac.setPythonTag("inst", objet)
+    rac.setPythonTag("id", str(id))
+    self.enMemoire[objet.typeG].append((fichier, rac))
+    return rac
+      
+  def fabriqueObjet(self, racine, objet, id):
+    fichier = os.path.join(".", "bam", str(hashlib.sha512(str(objet)).hexdigest())+".bam")
+    if objet.typeG=="admarea":
+      couleur = (1.0, 1.0, 1.0, 1.0)
+    elif objet.typeG=="admpt":
+      couleur = (1.0, 1.0, 1.0, 1.0)
+    elif objet.typeG=="admbdry":
+      couleur = (1.0, 1.0, 1.0, 1.0)
+    elif objet.typeG=="blda":
+      couleur = (0.9, 0.0, 0.9, 1.0)
+    elif objet.typeG=="bldl":
+      couleur = (0.9, 0.0, 0.9, 1.0)
+    elif objet.typeG=="cntr":
+      couleur = (0.1, 0.8, 1.0, 1.0)
+    elif objet.typeG=="commbdry":
+      couleur = (1.0, 1.0, 1.0, 1.0)
+    elif objet.typeG=="commpt":
+      couleur = (1.0, 1.0, 1.0, 1.0)
+    elif objet.typeG=="cstline":
+      couleur = (0.0, 0.0, 0.8, 1.0)
+    elif objet.typeG=="railcl":
+      couleur = (0.0, 0.0, 0.0, 1.0)
+    elif objet.typeG=="rdcompt":
+      couleur = (1.0, 0.0, 0.0, 1.0)
+    elif objet.typeG=="rdedg":
+      couleur = (1.0, 0.0, 0.0, 1.0)
+    elif objet.typeG=="wa":
+      couleur = (0.0, 0.0, 1.0, 1.0)
+    elif objet.typeG=="wl":
+      couleur = (0.0, 0.0, 1.0, 1.0)
+    elif objet.typeG=="elevpt":
+      return
+      couleur = (1.0, 0.8, 1.0, 1.0)
+    else:
+      couleur = (0.0, 1.0, 0.0, 1.0)
+      print "Type inconnu :",objet.typeG
 
 
-      rac = NodePath("objet"+str(id))
-      if objet.position != "None" and objet.position != None:
-        self.affichePoint(self.getPoint(objet.position), rac, couleur)
-      if objet.zone != "None" and objet.zone != None:
-        self.affichePolygone(self.getPolygone(objet.zone), rac, couleur)
-      rac.setAttrib(ColorAttrib.makeVertex()) 
-      rac.flattenStrong()
-      rac.writeBamFile(fichier)
+    rac = NodePath("objet"+str(id))
+    if objet.position != "None" and objet.position != None:
+      self.affichePoint(self.getPoint(objet.position), rac, couleur)
+    if objet.zone != "None" and objet.zone != None:
+      self.affichePolygone(self.getPolygone(objet.zone), rac, couleur)
+    rac.setAttrib(ColorAttrib.makeVertex()) 
+    rac.flattenStrong()
+    rac.writeBamFile(fichier)
     rac.reparentTo(racine)
     rac.setPythonTag("inst", objet)
     rac.setPythonTag("id", str(id))
@@ -226,7 +274,7 @@ class Affichage:
     if tuile!=None:
       return self.chargeTuiles(test, tuile)
       
-    req = "SELECT id FROM objet WHERE ("
+    req = "SELECT id, typeG FROM objet WHERE ("
     for type in test:
       if not type in self.typeAffichage:
         self.typeAffichage.append(type)
@@ -272,7 +320,7 @@ class Affichage:
     if os.path.exists(fichier):
       racineTuile=loader.loadModel(fichier)#, callback=chargeModel, extraArgs=[racine])
     else:
-      req = "SELECT id FROM objet WHERE ("
+      req = "SELECT id, typeG FROM objet WHERE ("
       for type in test:
         if not type in self.typeAffichage:
           self.typeAffichage.append(type)
@@ -302,8 +350,8 @@ class Affichage:
       cpt+=1.0
       if time.time() - majTime > 1.5:
         txt = "Progression : %.2f%%" %(cpt/len(reqObjets)*100.0)
-        self.gui.afficheTexte(txt, section="charge", forceRefresh=True)
+        self.gui.afficheTexte(txt, orientation="haut", section="charge", forceRefresh=True)
         majTime = time.time()
-      objets.append(self.gui.cg.afficheObjet(racine, self.gui.cg.getObjet(objet[0]), objet[0]))
-    self.gui.afficheTexte(None, section="charge", forceRefresh=True)
+      self.objetsAAfficher.append((racine, objet[0], objet[1]))
+      #objets.append(self.afficheObjet(racine, self.getObjet(objet[0]), objet[0]))
     return objets
