@@ -714,9 +714,8 @@ class ParserJP:
     
   def parse(self, BAM=False):
     if BAM:
-      cg.typeAffichage=cg.elements["tout"]
-      cg.sansFenetre()
-    while self.parseTick():
+      self.cg.typeAffichage=self.cg.elements["tout"]
+    while self.parseTick() or self.cg.ping():
       pass
     
   def prepareParse(self):

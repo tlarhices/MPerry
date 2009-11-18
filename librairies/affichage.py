@@ -141,33 +141,42 @@ class Affichage:
     else:
       self.objetsAFabriquer.append((racine, objet, id))
       
-  def ping(self):
+  def ping(self, tmpBoucle=0.1):
     
     deb = time.time()
-    
-    while time.time()-deb<0.1:
-      self.gui.setObjetEnAttente(False)
+    aFaitUnTruc = False
+    while time.time()-deb<tmpBoucle:
+      aFaitUnTruc = False
+      
       if len(self.objetsAAfficher)>0:
-        self.gui.setObjetEnAttente(True)
+        aFaitUnTruc = True
         racine, id, typeG = self.objetsAAfficher[0]
         self.objetsAAfficher = self.objetsAAfficher[1:]
         if typeG in self.typeAffichage:
           obj = self.getObjet(id)
           self.afficheObjet(racine, obj, id)
       if len(self.objetsACharger)>0:
-        self.gui.setObjetEnAttente(True)
+        aFaitUnTruc = True
         racine, objet, id = self.objetsACharger[0]
         self.objetsACharger = self.objetsACharger[1:]
         if objet.typeG in self.typeAffichage:
           self.chargeObjet(racine, objet, id)
       if len(self.objetsAFabriquer)>0:
-        self.gui.setObjetEnAttente(True)
+        aFaitUnTruc = True
         racine, objet, id = self.objetsAFabriquer[0]
         self.objetsAFabriquer = self.objetsAFabriquer[1:]
         if objet.typeG in self.typeAffichage:
           self.fabriqueObjet(racine, objet, id)
+    if self.gui!=None:
+      self.gui.setObjetEnAttente(aFaitUnTruc)
+    else:
+      cpt = len(self.objetsAAfficher) + len(self.objetsACharger) + len(self.objetsAFabriquer)
+      print cpt
+    return aFaitUnTruc
       
   def chargeObjet(self, racine, objet, id):
+    if self.NoLoad:
+      return None
     fichier = os.path.join(".", "bam", str(hashlib.sha512(str(objet)).hexdigest())+".bam")
     rac=loader.loadModel(fichier)
     rac.reparentTo(racine)
@@ -317,7 +326,7 @@ class Affichage:
     
   def chargeTuile(self, test, tuile, racine):
     fichier = os.path.join(".", "bam", str(hashlib.sha512(str(tuile)).hexdigest())+".bam")
-    if os.path.exists(fichier):
+    if False:#os.path.exists(fichier):
       racineTuile=loader.loadModel(fichier)#, callback=chargeModel, extraArgs=[racine])
     else:
       req = "SELECT id, typeG FROM objet WHERE ("
@@ -350,7 +359,8 @@ class Affichage:
       cpt+=1.0
       if time.time() - majTime > 1.5:
         txt = "Progression : %.2f%%" %(cpt/len(reqObjets)*100.0)
-        self.gui.afficheTexte(txt, orientation="haut", section="charge", forceRefresh=True)
+        if self.gui!=None:
+          self.gui.afficheTexte(txt, orientation="haut", section="charge", forceRefresh=True)
         majTime = time.time()
       self.objetsAAfficher.append((racine, objet[0], objet[1]))
       #objets.append(self.afficheObjet(racine, self.getObjet(objet[0]), objet[0]))

@@ -49,7 +49,7 @@ loadPrcFileData("",u"win-size 160 120")
 #Kicke la synchro avec VSynch pour pouvoir dépasser les 60 FPS
 loadPrcFileData("",u"sync-video #f")
 if len(sys.argv)>1:
-  if sys.argv[1]=="parse" or sys.argv[1]=="parse+bam":
+  if sys.argv[1]=="parse" or sys.argv[1]=="parse+bam" or sys.argv[1]=="bam":
     loadPrcFileData("",u"window-type none")
 import direct.directbase.DirectStart
 from direct.task import Task
@@ -84,7 +84,9 @@ if len(sys.argv)>1:
     parseur.parse()
     sys.exit()
   if sys.argv[1]=="bam":
-    cg.buildBam()
+    aff.buildBam()
+    while aff.ping(3.0):
+      pass
     sys.exit()
 
 taskMgr.add(ping, "ping")
