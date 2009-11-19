@@ -140,12 +140,15 @@ class Affichage:
         #rac=loader.loadModel(fichier)#, callback=chargeModel, extraArgs=[racine])
     else:
       self.objetsAFabriquer.append((racine, objet, id))
-      
   def ping(self, tmpBoucle=0.1):
-    
+    start=True
+    try:
+      general.bdd.execute("BEGIN")
+    except sqlite.DatabaseError:
+      start=False
     deb = time.time()
     aFaitUnTruc = False
-    while time.time()-deb<tmpBoucle:
+    while time.time()-deb<tmpBoucle/2:
       aFaitUnTruc = False
       
       if len(self.objetsAAfficher)>0:
@@ -161,12 +164,16 @@ class Affichage:
         self.objetsACharger = self.objetsACharger[1:]
         if objet.typeG in self.typeAffichage:
           self.chargeObjet(racine, objet, id)
+    while time.time()-deb<tmpBoucle:
       if len(self.objetsAFabriquer)>0:
         aFaitUnTruc = True
         racine, objet, id = self.objetsAFabriquer[0]
         self.objetsAFabriquer = self.objetsAFabriquer[1:]
         if objet.typeG in self.typeAffichage:
           self.fabriqueObjet(racine, objet, id)
+    if start:
+      print "endTra"
+      general.bdd.execute("END")  
     if self.gui!=None:
       self.gui.setObjetEnAttente(aFaitUnTruc)
     else:
@@ -290,7 +297,6 @@ class Affichage:
       req+= "typeG='"+type+"' OR "
     
     req+="1=0)"
-    print req
     general.bdd.execute(req)
     reqObjets=general.bdd.fetchall()
     self.chargeObjets(reqObjets, self.racine)
@@ -306,7 +312,10 @@ class Affichage:
     rac.reparentTo(racine)
     return rac
     
-
+    
+  def getEnVue(self):
+    pass
+    
   def chargeTuiles(self, tableau, tuile):
     inutiles = self.tuiles[:]
     self.dessineCarre((0.0, 0.0, 1.0, 1.0), tuile.coord[0], tuile.coord[1], self.racine)

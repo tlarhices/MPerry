@@ -152,27 +152,27 @@ class Interface:
     base.camera.setPos(p[0], p[1]*1.333, p[2])
     
   deltaCamX = 0.01
-  deltaCamY = 0.001
+  deltaCamY = 0.01
     
   def deplaceHaut(self):
     self.droite.snapLibre.onClick()
     p = base.camera.getPos()
-    base.camera.setPos(p[0], p[1], p[2]+self.deltaCamY)
+    base.camera.setPos(p[0], p[1], p[2]+self.deltaCamY*p[1])
   
   def deplaceBas(self):
     self.droite.snapLibre.onClick()
     p = base.camera.getPos()
-    base.camera.setPos(p[0], p[1], p[2]-self.deltaCamY)
+    base.camera.setPos(p[0], p[1], p[2]-self.deltaCamY*p[1])
 
   def deplaceGauche(self):
     self.droite.snapLibre.onClick()
     p = base.camera.getPos()
-    base.camera.setPos(p[0]+self.deltaCamX, p[1], p[2])
+    base.camera.setPos(p[0]+self.deltaCamX*p[1], p[1], p[2])
 
   def deplaceDroite(self):
     self.droite.snapLibre.onClick()
     p = base.camera.getPos()
-    base.camera.setPos(p[0]-self.deltaCamX, p[1], p[2])
+    base.camera.setPos(p[0]-self.deltaCamX*p[1], p[1], p[2])
     
   def select(self, type, affiche=True):
     type=type.lower()
@@ -186,7 +186,6 @@ class Interface:
       
   def afficheTexte(self, texte, orientation="centre", section=None, forceRefresh=False):
     """Affiche le texte sur l'écran, si texte==None, alors efface le dernier texte affiché"""
-    print texte, orientation
     try:
       if texte!=None:
         if orientation=="bas":
@@ -220,3 +219,5 @@ class Interface:
     self.chargement.visable = vrai
     if vrai:
       self.afficheTexte(texte="Objets restants a afficher : "+str(len(self.cg.objetsAAfficher) + len(self.cg.objetsACharger) + len(self.cg.objetsAFabriquer)), orientation = "haut")
+    else:
+      self.afficheTexte(texte="", orientation = "haut")

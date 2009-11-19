@@ -282,6 +282,12 @@ class Objet:
     return "objet("+str(self.typeG)+";"+str(self.position)+";"+str(self.zone)+")"
     
   def depuisBDD(self, id):
+    start = True
+    try:
+      general.bdd.execute("BEGIN;")
+    except sqlite.DatabaseError:
+      start = False
+      
     req = "SELECT dateDeb, dateFin, position, zone, typeG, type, nom, codeAdministratif FROM objet WHERE id="+str(id)
     general.bdd.execute(req)
     reqCharge=general.bdd.fetchall()
@@ -305,10 +311,18 @@ class Objet:
       self.codeAdministratif = None
     else:
       self.codeAdministratif = reqCharge[0][7]
+    if start:
+      general.bdd.execute("END;")  
+      print "endtra"
     return id
   def majBDD(self):
     print "TODO objet:majBDD"
   def versBDD(self):
+    start = True
+    try:
+      general.bdd.execute("BEGIN")  
+    except sqlite.DatabaseError:
+      start = False
     type = str(self.type.encode("utf-8"))
     if self.nom!=None:
       nom =  str(self.nom.encode("utf-8"))
@@ -320,6 +334,9 @@ class Objet:
     reqExiste=general.bdd.fetchall()
     if len(reqExiste)>0:
       self.id = int(reqExiste[0][0])
+      if start:
+        general.bdd.execute("END")  
+        print "endtra"
       return self.id
     else:
       general.bdd.execute("SELECT MAX(id) FROM objet")
@@ -335,7 +352,13 @@ class Objet:
       req = "INSERT INTO objet(id, dateDeb, dateFin, position, zone, typeG, type, nom, codeAdministratif) VALUES ("+id+", '"+str(self.dateDeb)[1:-1]+"', '"+str(self.dateFin)[1:-1]+"', '"+str(self.position)+"', '"+str(self.zone)+"', '"+str(self.typeG)+"', '"+str(type)+"', '"+str(nom)+"', '"+str(self.codeAdministratif)+"')"
       general.bdd.execute(req)
       general.basedonnee.commit()
+      if start:
+        general.bdd.execute("END")  
+        print "endtra"
       return int(id)
+    if start:
+      general.bdd.execute("END")  
+      print "endtra"
     
   def affiche(self):
     out = u"-------------------------\r\n"

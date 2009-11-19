@@ -749,14 +749,13 @@ class ParserJP:
         else:
           tt = fichier.split(".")[0]
     #    if tt in ['AdmArea', 'AdmBdry', 'AdmPt', 'BldA', 'BldL', 'CommBdry', 'CommPt', 'Cstline', 'ElevPt', 'RailCL', 'RdCompt', 'RdEdg', 'WA', 'WL']:
-        if tt in ['AdmBdry', 'AdmPt', 'CommBdry', 'CommPt', 'Cstline', 'RailCL', 'RdCompt', 'WL', 'WA']: #'RdEdg', 
+        if tt in ['AdmArea', 'AdmBdry', 'AdmPt', 'BldA', 'BldL', 'CommBdry', 'CommPt', 'Cstline', 'ElevPt', 'RailCL', 'RdCompt', 'RdEdg', 'WA', 'WL']: #'RdEdg', 
     #    if tt in ['AdmArea25000', 'AdmArea', 'AdmBdry', 'AdmBdry25000', 'AdmPt25000', 'AdmPt', 'BldA', 'BldA25000', 'BldA', 'BldA25000', 'BldL', 'Cntr25000', 'CommBdry', 'CommPt', 'Cstline25000', 'Cstline', 'ElevPt', 'ElevPt25000', 'RailCL', 'RailCL25000', 'RdCompt', 'RdEdg25000', 'RdEdg', 'WA', 'WL', 'WL25000']:
           self.fichiers.append(fichier)
 
   def parseTick(self):
     if len(self.lignes)==0:
       if self.enCours!=None:
-        print "mv",self.enCours, os.path.join(".", "xml","fini",self.enCours.replace("\\","/").split("/")[-1])
         shutil.move(self.enCours, os.path.join(".", "xml","fini",self.enCours.replace("\\","/").split("/")[-1]))
       if len(self.fichiers)==0:
         print "plus rien a parser"
