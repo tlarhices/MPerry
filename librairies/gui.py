@@ -199,6 +199,11 @@ class Interface:
       return
     
     if forceRefresh:
+      self.gui._doMouse()
+      self.gui._doDrag()
+      self.gui._reSize()
+      self.gui._layout()
+      self.gui._draw()
       base.graphicsEngine.renderFrame()
       
   def snapMode(self):

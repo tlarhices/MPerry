@@ -5,12 +5,13 @@ import os
 import sys
 
 sys.path.append(os.path.join(".", "librairies"))
+sys.path.insert(0,os.path.join(".", "librairies/parseurs"))
 sys.path.append(os.path.join(".", "data"))
 
 from gps import GPS
 from db import DB
 from affichage import Affichage
-from parserjp import ParserJP
+from parser import *
 from gui import Interface
 
 def ping(task):
@@ -73,7 +74,7 @@ if base.win!=None:
 else:
   gui = None
 aff.gui = gui
-parseur = ParserJP(gui)
+parseur = Parser(gui)
 parseur.cg = aff
 parseur.prepareParse()
 
