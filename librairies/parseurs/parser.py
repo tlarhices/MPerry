@@ -8,6 +8,7 @@ import xml.parsers.expat
 from objets import *
 
 from parserjp import ParserJP
+from parserndb import ParserNDB
 
 class Parser:
   parser = None
@@ -32,12 +33,18 @@ class Parser:
       pass
     
   def prepareParse(self):
-    lst = os.listdir("./xml")
-    
+    lst1 = os.listdir("./xml")
+    lst2 = os.listdir("./ndb")
+    lst = []
+    for elem in lst1:
+      lst.append(os.path.join(".","xml",elem))
+    for elem in lst2:
+      lst.append(os.path.join(".","ndb",elem))
+      
     fichTaille = {}
     tailles = []
     for fichier in lst:
-      taille = os.path.getsize(os.path.join(".","xml",fichier))
+      taille = os.path.getsize(fichier)
       if not taille in fichTaille.keys():
         fichTaille[taille]=[]
       fichTaille[taille].append(fichier)
@@ -54,7 +61,6 @@ class Parser:
         lst.append(fichier)
     
     for fichier in lst:
-      fichier = os.path.join(".","xml",fichier)
       if fichier.lower().strip().endswith(".xml"):
         tt=fichier.split("-")
         if len(tt)>2:
@@ -65,6 +71,8 @@ class Parser:
         if tt in ['AdmArea', 'AdmBdry', 'AdmPt', 'BldA', 'BldL', 'CommBdry', 'CommPt', 'Cstline', 'ElevPt', 'RailCL', 'RdCompt', 'RdEdg', 'WA', 'WL']: #'RdEdg', 
     #    if tt in ['AdmArea25000', 'AdmArea', 'AdmBdry', 'AdmBdry25000', 'AdmPt25000', 'AdmPt', 'BldA', 'BldA25000', 'BldA', 'BldA25000', 'BldL', 'Cntr25000', 'CommBdry', 'CommPt', 'Cstline25000', 'Cstline', 'ElevPt', 'ElevPt25000', 'RailCL', 'RailCL25000', 'RdCompt', 'RdEdg25000', 'RdEdg', 'WA', 'WL', 'WL25000']:
           self.fichiers.append(fichier)
+      elif fichier.lower().strip().endswith(".ndb"):
+        self.fichiers.append(fichier)
 
   def parseTick(self):
     if self.doitChanger:
@@ -85,20 +93,25 @@ class Parser:
       self.fichiers=self.fichiers[1:]
       self.lignes = f.readlines()
       f.close()
-      OK=False
-      i=0
-      while not OK:
-        if i>=len(self.lignes):
-          OK=True
-          raw_input("Parseur :: Format de fichier inconnu")
-          return
-        ligne = self.lignes[i]
-        i+=1
-        if ligne.lower().strip().startswith("<gi"):
-          # JP
-          self.parser = ParserJP(self.gui)
-          self.parser.cg = self.cg
-          self.parser.fichiers = [self.enCours]
-          OK=True
+      if self.enCours.endswith(".ndb"):
+        self.parser = ParserNDB(self.gui)
+        self.parser.cg = self.cg
+        self.parser.fichiers = [self.enCours]
+      else:
+        OK=False
+        i=0
+        while not OK:
+          if i>=len(self.lignes):
+            OK=True
+            raw_input("Parseur :: Format de fichier inconnu")
+            return
+          ligne = self.lignes[i]
+          i+=1
+          if ligne.lower().strip().startswith("<gi"):
+            # JP
+            self.parser = ParserJP(self.gui)
+            self.parser.cg = self.cg
+            self.parser.fichiers = [self.enCours]
+            OK=True
     self.doitChanger = not self.parser.parseTick()
     return True
