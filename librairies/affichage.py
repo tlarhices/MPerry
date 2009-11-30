@@ -29,7 +29,7 @@ class Affichage:
     self.racine = NodePath("")
     self.racine.reparentTo(render)
     
-    self.elements = {"trains":["railcl"], "eau":["wa", "wl", "cstline"], "routes":["rdcompt", "rdedg"], "communaute":["commbdry", "commpt"], "administration":["admarea", "admpt", "admbdry"], "batiments":["blda", "bldl"], "terrain":["cntr", "elevpt"], "tout":["railcl", "wa", "wl", "cstline", "rdcompt", "rdedg", "commbdry", "commpt", "admarea", "admpt", "admbdry", "blda", "bldl", "cntr", "elevpt"]}
+    self.elements = {"ndb":["ndb"], "trains":["railcl", "ndb"], "eau":["wa", "wl", "cstline"], "routes":["rdcompt", "rdedg"], "communaute":["commbdry", "commpt"], "administration":["admarea", "admpt", "admbdry"], "batiments":["blda", "bldl"], "terrain":["cntr", "elevpt"], "tout":["railcl", "wa", "wl", "cstline", "rdcompt", "rdedg", "commbdry", "commpt", "admarea", "admpt", "admbdry", "blda", "bldl", "cntr", "elevpt", "ndb"]}
 
     self.enMemoire={}
     self.typeAffichage = []

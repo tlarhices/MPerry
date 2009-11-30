@@ -9,6 +9,7 @@ from objets import *
 
 from parserjp import ParserJP
 from parserndb import ParserNDB
+from parserosm import ParserOSM
 
 class Parser:
   parser = None
@@ -35,11 +36,14 @@ class Parser:
   def prepareParse(self):
     lst1 = os.listdir("./xml")
     lst2 = os.listdir("./ndb")
+    lst3 = os.listdir("./osm")
     lst = []
     for elem in lst1:
       lst.append(os.path.join(".","xml",elem))
     for elem in lst2:
       lst.append(os.path.join(".","ndb",elem))
+    for elem in lst3:
+      lst.append(os.path.join(".","osm",elem))
       
     fichTaille = {}
     tailles = []
@@ -73,6 +77,8 @@ class Parser:
           self.fichiers.append(fichier)
       elif fichier.lower().strip().endswith(".ndb"):
         self.fichiers.append(fichier)
+      elif fichier.lower().strip().endswith(".osm"):
+        self.fichiers.append(fichier)
 
   def parseTick(self):
     if self.doitChanger:
@@ -95,6 +101,10 @@ class Parser:
       f.close()
       if self.enCours.endswith(".ndb"):
         self.parser = ParserNDB(self.gui)
+        self.parser.cg = self.cg
+        self.parser.fichiers = [self.enCours]
+      elif self.enCours.endswith(".osm"):
+        self.parser = ParserOSM(self.gui)
         self.parser.cg = self.cg
         self.parser.fichiers = [self.enCours]
       else:
