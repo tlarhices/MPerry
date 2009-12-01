@@ -34,6 +34,7 @@ class ParserOSM:
       self.pile[str(self.chemin)].append(str(clef.encode("utf-8"))+":"+str(attrs[clef].encode("utf-8")))
     
   nodelist={}
+  waylist={}
     
   def end_element(self, name):
     cg=self.cg
@@ -109,9 +110,9 @@ class ParserOSM:
       elif k.startswith("maxspeed"):
         self.pile[str(self.chemin)] = None
       elif k.startswith("operator"):
-        self.pile[str(self.chemin)] = k,v
+        self.pile[str(self.chemin)] = "operator",v
       elif k.startswith("leisure"):
-        self.pile[str(self.chemin)] = k,v
+        self.pile[str(self.chemin)] = "leisure",v
       elif k.startswith("boundary"):
         self.pile[str(self.chemin)] = None
       elif k.startswith("admin_level"):
@@ -120,39 +121,39 @@ class ParserOSM:
         self.pile[str(self.chemin)] = "lanes",v
       elif k.startswith("bridge"):
         if v.lower().strip()=="yes":
-          self.pile[str(self.chemin)] = "bridge"
+          self.pile[str(self.chemin)] = "bridge", True
         else:
           self.pile[str(self.chemin)] = None
       elif k.startswith("building"):
         if v.lower().strip()=="yes":
-          self.pile[str(self.chemin)] = "building"
+          self.pile[str(self.chemin)] = "building", True
         else:
           self.pile[str(self.chemin)] = None
       elif k.startswith("tunnel"):
         if v.lower().strip()=="yes":
-          self.pile[str(self.chemin)] = "tunnel"
+          self.pile[str(self.chemin)] = "tunnel", True
         else:
           self.pile[str(self.chemin)] = None
       elif k.startswith("foot"):
         if v.lower().strip()=="yes":
-          self.pile[str(self.chemin)] = "foot"
+          self.pile[str(self.chemin)] = "foot", True
         else:
           self.pile[str(self.chemin)] = None
       elif k.startswith("cutting"):
         if v.lower().strip()=="yes":
-          self.pile[str(self.chemin)] = "cutting"
+          self.pile[str(self.chemin)] = "cutting", True
         else:
           self.pile[str(self.chemin)] = None
       elif k.startswith("boat"):
         if v.lower().strip()=="yes":
-          self.pile[str(self.chemin)] = "boat"
+          self.pile[str(self.chemin)] = "boat", True
         else:
           self.pile[str(self.chemin)] = None
       elif k.startswith("waterway"):
         self.pile[str(self.chemin)] = k,v
       elif k.startswith("oneway"):
         if v.lower().strip()=="yes":
-          self.pile[str(self.chemin)] = "oneway"
+          self.pile[str(self.chemin)] = "oneway", True
         else:
           self.pile[str(self.chemin)] = None
       elif k.startswith("highway"):
@@ -160,7 +161,7 @@ class ParserOSM:
       elif k.startswith("route"):
         self.pile[str(self.chemin)] = "road"
       elif k.startswith("type"):
-        self.pile[str(self.chemin)] = k,v
+        self.pile[str(self.chemin)] = "type",v
       elif k.startswith("shop"):
         self.pile[str(self.chemin)] = "shop",v
       elif k.startswith("barrier"):
@@ -174,12 +175,9 @@ class ParserOSM:
         raw_input()
     elif name == "node":
       OK = True
-      changeset, uid, timestamp, lon, visible, version, user, lat, id = self.pile[str(self.chemin)][0:9]
-      parametres = self.pile[str(self.chemin)][9:]
-      #if len(parametres)>0:
-      #  print parametres
-      self.nodelist[int(id.split(":")[1])]=int(id.split(":")[1])
-      self.nodelist[int(changeset.split(":")[1])]=int(id.split(":")[1])
+      dico = self.getDico({"changeset":[], "uid":[], "timestamp":[], "visible":[], "version":[], "user":[], "lon":[], "lat":[], "id":[], "nom":[], "LIN":[], "RAC_label":[], "road":[], "shop":[], "amenity":[], "INT_label":[], "STN":[], "is_in":[], "PRN":[], "barrier":[]}, self.pile[str(self.chemin)])
+      self.nodelist[int(dico["id"][0])]=int(dico["id"][0])
+      self.nodelist[int(dico["changeset"][0])]=int(dico["id"][0])
     elif name == "nd":
       OK = True
       self.pile[str(self.chemin)] = self.nodelist[int(self.pile[str(self.chemin)][0].split(":")[1])]
@@ -191,16 +189,19 @@ class ParserOSM:
       ref, role, type = self.pile[str(self.chemin)]
     elif name == "relation":
       OK = True
-      changeset, uid, timestamp, visible, version, user, id = self.pile[str(self.chemin)][0:7]
-      members = self.pile[str(self.chemin)][7:]
+      dico = self.getDico({"changeset":[], "uid":[], "timestamp":[], "visible":[], "version":[], "user":[], "id":[], "member":[], "nom":[], "road":[], "route":[], "type":[]}, self.pile[str(self.chemin)])
+      print self.waylist.keys()
+      for way in dico["member"]:
+        way = self.getDico({"ref":[], "role":[], "type":[]}, way[0])
+      self.pile[str(self.chemin)] = None
     elif name == "way":
       OK = True
-      changeset, uid, timestamp, visible, version, user, id = self.pile[str(self.chemin)][0:7]
-      chemins = self.pile[str(self.chemin)][7:]
-      try:
-        self.pile[str(self.chemin)] = self.nodelist[int(self.pile[str(self.chemin)][0].split(":")[1])]
-      except KeyError:
-        print ":(", int(self.pile[str(self.chemin)][0].split(":")[1])
+      dico = self.getDico({"changeset":[], "uid":[], "timestamp":[], "visible":[], "version":[], "user":[], "id":[], "nd":[], "amenity":[], "nom":[], "road":[], "lanes":[], "bridge":[], "oneway":[], "tunnel":[], "foot":[], "waterway":[], "LIN":[], "operator":[], "RAC_label":[], "INT_label":[], "cutting":[], "leisure":[], "building":[]}, self.pile[str(self.chemin)])
+      nd = []
+      for point in dico["nd"]:
+        nd.append(("nd", self.nodelist[int(point[0])]))
+      self.waylist[str(dico["id"][0])]=nd
+      self.pile[str(self.chemin)] = None
     else:
       print
       print '  elif name == "'+name+'":'
@@ -221,11 +222,29 @@ class ParserOSM:
       raw_input("element inconnu")
       
     if len(self.chemin)>1 and self.pile[str(self.chemin)]!=None:
-      self.pile[str(self.chemin[:-1])].append((name, self.pile[str(self.chemin)]))
+      if name ==u"tag":
+        self.pile[str(self.chemin[:-1])].append(self.pile[str(self.chemin)])
+      else:
+        self.pile[str(self.chemin[:-1])].append((name, self.pile[str(self.chemin)]))
     #print self.pile[str(self.chemin[:-1])], "<<", name
     self.pile[str(self.chemin)] = None
     del self.pile[str(self.chemin)]
     self.chemin.remove(name)
+    
+  def getDico(self, dico, parametres):
+    for parametre in parametres:
+      if isinstance(parametre, unicode) or isinstance(parametre, str):
+        id = parametre.split(":")[0]
+        details = ":".join(parametre.split(":")[1:])
+      else:
+        id = parametre[0]
+        details = parametre[1:]
+      if id in dico.keys():
+        dico[id].append(details)
+      else:
+        print "type",id,"pas attendu pour le dictionnaire", dico.keys()
+        raw_input()
+    return dico
   
   def char_data(self,data):
     data=data.strip()
